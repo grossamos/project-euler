@@ -1,3 +1,15 @@
+use float_eq::float_eq;
+
+pub fn find_smallest_multiple(divison_limit: u32, second_divisor: u32) -> u32 {
+    let base = get_base(divison_limit);
+    let mut smallest_multiple = base;
+
+    while !test_divisiblity(smallest_multiple, second_divisor, divison_limit) {
+        smallest_multiple += base;
+    }
+    smallest_multiple
+}
+
 fn get_base(limit: u32) -> u32 {
     let mut base = 2;
     let mut prime_generator = Primes::new();
@@ -11,8 +23,7 @@ fn get_base(limit: u32) -> u32 {
 
 fn test_divisiblity(base: u32, constant_divisor: u32, limit: u32) -> bool {
     for divisor in 2..limit + 1 {
-        println!("{}", base / divisor);
-        if (base as f64 / divisor as f64) % constant_divisor as f64 != 0.0 {
+        if !float_eq!((base as f64 / divisor as f64) % constant_divisor as f64, 0.0, abs <= 1.0) {
             return false;
         }
     }
@@ -51,7 +62,7 @@ impl Iterator for Primes {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Primes, get_base, test_divisiblity};
+    use crate::{Primes, get_base, test_divisiblity, find_smallest_multiple};
 
     // even 
     // factors: 2, 2, 3, 5, 7 ... (primes)
@@ -71,5 +82,10 @@ mod tests {
     fn does_divisibility_test() {
         assert!(test_divisiblity(2520, 1, 10));
         assert!(!test_divisiblity(8888, 1, 10));
+    }
+
+    #[test]
+    fn finds_smallest_multiple() {
+        assert_eq!(find_smallest_multiple(10, 1), 2520);
     }
 }

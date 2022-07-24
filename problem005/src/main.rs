@@ -1,3 +1,5 @@
+use problem005::find_smallest_multiple;
+
 fn main() {
-    println!("Hello, world!");
+    println!("{}", find_smallest_multiple(20, 2));
 }
