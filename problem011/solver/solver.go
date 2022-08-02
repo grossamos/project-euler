@@ -1,6 +1,9 @@
 package solver
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 func getAdjacentProducts(array [][]uint, x uint, y uint, length uint) ([]uint, error) {
     products := []uint{}
@@ -9,9 +12,9 @@ func getAdjacentProducts(array [][]uint, x uint, y uint, length uint) ([]uint, e
     }
 
     rightOkay := len(array[0]) >= int(x + length)
-    leftOkay := int(x) - int(length) > 0
+    leftOkay := int(x + 1) - int(length) >= 0
     downOkay := len(array) >= int(y + length)
-    upOkay := int(y) - int(length) > 0 
+    upOkay := int(y + 1) - int(length) >= 0 
 
     // right
     if rightOkay {
@@ -51,22 +54,39 @@ func getAdjacentProducts(array [][]uint, x uint, y uint, length uint) ([]uint, e
 
     // diagonal down-right
     if downOkay && rightOkay {
+        product := uint(1)
+        for index := uint(0); index < length; index++ {
+            product *= array[y + index][x + index]
+        }
+        products = append(products, product)
     }
 
     // diagonal down-left
-    // diagonal up-right
-    // diagonal up-left
+    if downOkay && leftOkay {
+        product := uint(1)
+        for index := uint(0); index < length; index++ {
+            product *= array[y + index][x - index]
+        }
+        products = append(products, product)
+    }
 
-    
+    // diagonal up-right
+    if upOkay && rightOkay {
+        product := uint(1)
+        for index := uint(0); index < length; index++ {
+            product *= array[y - index][x + index]
+        }
+        products = append(products, product)
+    }
+
+    // diagonal up-left
+    if upOkay && leftOkay {
+        product := uint(1)
+        for index := uint(0); index < length; index++ {
+            product *= array[y - index][x - index]
+        }
+        products = append(products, product)
+    }
 
     return products, nil
-}
-
-func generateProductFromArray(x uint, y uint, down bool, right bool, length uint, array uint) uint {
-    // TODO use this function to replace repetition in top
-    product := uint(1)
-    for index := uint(0); index < length; index++ {
-        product *= array[y + index][x + index]
-    }
-    return product
 }
