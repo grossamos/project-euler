@@ -28,5 +28,6 @@ func TestGetAdjacentProducts(t *testing.T) {
 }
 
 func TestGetGreatestNumFromArray(t *testing.T) {
-    // TODO
+    got := GetGreatestProductFromArray(array, 4)
+    assert.Equal(t, got, uint(34 * 45 * 75 * 61))
 }

@@ -2,7 +2,6 @@ package solver
 
 import (
 	"errors"
-	"fmt"
 )
 
 func getAdjacentProducts(array [][]uint, x uint, y uint, length uint) ([]uint, error) {
@@ -88,5 +87,21 @@ func getAdjacentProducts(array [][]uint, x uint, y uint, length uint) ([]uint, e
         products = append(products, product)
     }
 
+
     return products, nil
+}
+
+func GetGreatestProductFromArray(array [][]uint, limit uint) uint {
+    greatestProduct := uint(0)
+    for i := uint(0); i < uint(len(array)); i++ {
+        for j := uint(0); j < uint(len(array[0])); j++ {
+            products, _ := getAdjacentProducts(array, j, i, limit)
+            for _, product := range products {
+                if product > greatestProduct {
+                    greatestProduct = product
+                }
+            }
+        }
+    }
+    return greatestProduct
 }
