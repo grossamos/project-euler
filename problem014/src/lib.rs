@@ -9,8 +9,10 @@ fn generate_next_collatz_item(base: u64) -> u64 {
 }
 
 fn get_length_of_chain(mut start: u64, known_chains: &mut HashMap<u64, usize>) -> usize {
+    known_chains.insert(1, 1);
     let mut chain = vec![start];
-    while start != 1 && !known_chains.contains_key(&start) {
+    //while known_chains.contains_key(&start) {
+    while start != 1 {
         start = generate_next_collatz_item(start);
         chain.push(start);
     }
