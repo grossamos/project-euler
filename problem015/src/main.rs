@@ -1,5 +1,5 @@
-use problem015::count_attempts;
+use problem015::calc_waypoint_sum;
 
 fn main() {
-    println!("{}", count_attempts(20));
+    println!("{}", calc_waypoint_sum(20, 20));
 }

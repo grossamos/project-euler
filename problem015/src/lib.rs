@@ -1,34 +1,53 @@
-fn check_attempt(path: u64, grid_size: u32) -> bool {
-    if path % 10000000000 == 0 {
-        println!("{}, {}", path, u64::MAX);
-    }
-    path.count_ones() == grid_size
+use std::collections::HashMap;
+
+struct DynamicCache {
+    known_waypoints: HashMap<(u64, u64), u64>
 }
 
-pub fn count_attempts(grid_size: u32) -> usize {
-    //let mut count = 0;
-    //for i in (u64::MIN + 2_u64.pow(grid_size + 1)..u64::MAX - 2_u64.pow(grid_size - 1)).step_by(2_usize.pow(64 - grid_size * 2)) {
-        //if check_attempt(i, grid_size) {
-            //count += 1;
-        //}
-    //}
-    (u64::MIN + 2_u64.pow(grid_size + 1)..u64::MAX - 2_u64.pow(grid_size - 1)).step_by(2_usize.pow(64 - grid_size * 2)).filter(|x| check_attempt(*x, grid_size)).count()
+impl DynamicCache {
+    fn calc_waypoint_sum(&mut self, x: u64, y: u64) -> u64 {
+        match self.known_waypoints.get(&(x, y)) {
+            Some(waypoint_sum) => {
+                *waypoint_sum
+            },
+            None => {
+                let waypoint_sum = if x == 0 && y == 0 {
+                    0
+                } else if x == 0 || y == 0 {
+                    1
+                } else {
+                    println!("{}, {}", x, y);
+                    self.calc_waypoint_sum(x - 1, y) + self.calc_waypoint_sum(x, y - 1)
+                };
+                self.known_waypoints.insert((x, y), waypoint_sum);
+                waypoint_sum
+            }
+        }
+    }
+}
 
-    //count
+pub fn calc_waypoint_sum(x: u64, y: u64) -> u64 {
+    let mut cache = DynamicCache {known_waypoints: HashMap::new()};
+    cache.calc_waypoint_sum(x, y)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{check_attempt, count_attempts};
-
+    use crate::calc_waypoint_sum;
 
     #[test]
-    fn can_check_attempt() {
-        assert!(check_attempt(0b0000_0000_0000_0000_0000_1111_1111_1111_1111_1111_0000_0000_0000_0000_0000_0000, 20));
+    fn can_calculate_waypoint_sum_base_cases() {
+        assert_eq!(0, calc_waypoint_sum(0, 0));
+        assert_eq!(1, calc_waypoint_sum(1, 0));
+        assert_eq!(1, calc_waypoint_sum(0, 1));
+        assert_eq!(1, calc_waypoint_sum(0, 10));
     }
 
     #[test]
-    fn can_count_attempts() {
-        assert_eq!(count_attempts(2), 6);
+    fn can_calculate_waypoint_sum() {
+        assert_eq!(2, calc_waypoint_sum(1, 1));
+        assert_eq!(3, calc_waypoint_sum(1, 2));
+        assert_eq!(6, calc_waypoint_sum(2, 2));
+        assert_eq!(20, calc_waypoint_sum(3, 3));
     }
 }
