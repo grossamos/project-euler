@@ -21,20 +21,20 @@ import (
 func matchingStrings(strings []string, queries []string) []int32 {
     // change strings into map
     string_count := make(map[string]int32)
-    for _, input_str := range strings {
-        string_count[input_str] = 0
+    for _, query := range queries {
+        string_count[query] = 0
     }
     // go through queries and insert
-    for _, query := range queries {
-        count, exists := string_count[query]
+    for _, str := range strings {
+        count, exists := string_count[str]
         if exists {
-            string_count[query] = count + 1
+            string_count[str] = count + 1
         }
     }
     // output the lengths as needed in strings
     counts := make([]int32, len(queries))
-    for i, input_str := range strings {
-        counts[i] = string_count[input_str]
+    for i, query := range queries {
+        counts[i] = string_count[query]
     }
     return counts
 
@@ -53,11 +53,11 @@ func main() {
     stringsCount, err := strconv.ParseInt(strings.TrimSpace(readLine(reader)), 10, 64)
     checkError(err)
 
-    var strings []string
+    var strings_b []string
 
     for i := 0; i < int(stringsCount); i++ {
         stringsItem := readLine(reader)
-        strings = append(strings, stringsItem)
+        strings_b = append(strings_b, stringsItem)
     }
 
     queriesCount, err := strconv.ParseInt(strings.TrimSpace(readLine(reader)), 10, 64)
@@ -70,7 +70,7 @@ func main() {
         queries = append(queries, queriesItem)
     }
 
-    res := matchingStrings(strings, queries)
+    res := matchingStrings(strings_b, queries)
 
     for i, resItem := range res {
         fmt.Fprintf(writer, "%d", resItem)
